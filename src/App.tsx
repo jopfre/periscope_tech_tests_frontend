@@ -1,43 +1,33 @@
-import React, { useEffect, useRef, useState } from "react";
-import "./App.css";
-import "mapbox-gl/dist/mapbox-gl.css";
-import Map, { Layer, Source, MapRef } from "react-map-gl";
-import mapboxgl from "mapbox-gl";
+import { useEffect, useRef, useState } from 'react';
+import './App.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import Map, { Layer, Source, MapRef } from 'react-map-gl';
+import mapboxgl from 'mapbox-gl';
+import Form from './components/Form';
 
 const projectCenter = [-103.47180301341449, 51.81286542594248] as const;
 const REACT_APP_MAPBOX_TOKEN =
-  "pk.eyJ1IjoibGFycnlib2x0IiwiYSI6ImNsZnJ5ZXhjZTAwd3YzaHNjaDVxM2FraW4ifQ.zqbty_M1cm7fkFY9gTvrLg";
+  'pk.eyJ1IjoibGFycnlib2x0IiwiYSI6ImNsZnJ5ZXhjZTAwd3YzaHNjaDVxM2FraW4ifQ.zqbty_M1cm7fkFY9gTvrLg';
 if (!REACT_APP_MAPBOX_TOKEN)
-  throw new Error("REACT_APP_MAPBOX_TOKEN is not defined");
-
-interface CatchmentStation {
-  catchmentUuid: string;
-  stationSid: string;
-  trainingDateRange?: string;
-  validationDateRange?: string;
-}
+  throw new Error('REACT_APP_MAPBOX_TOKEN is not defined');
 
 function App() {
   const mapRef = useRef<MapRef>();
 
-  const [selectedStation, setSelectedStation] = useState<null | any>(null);
-
-  const [catchments, setCatchments] = useState<null | any>(null);
   const [stations, setStations] = useState<null | any>(null);
-
-  const [catchmentStations, setCatchmentStations] = useState<
-    CatchmentStation[]
-  >([]);
+  const [selectedStation, setSelectedStation] =
+    useState<null | mapboxgl.MapboxGeoJSONFeature>(null);
+  const [catchments, setCatchments] = useState<null | any>(null);
 
   useEffect(() => {
-    fetch("/data/climate_stations.geojson")
+    fetch('/data/climate_stations.geojson')
       .then((response) => response.json())
       .then((data) => {
         setTimeout(() => {
           setStations(data);
         }, Math.round(Math.random() * 5000));
       });
-    fetch("/data/All_Catchment_Boundaries.geojson")
+    fetch('/data/All_Catchment_Boundaries.geojson')
       .then((response) => response.json())
       .then((data) => {
         setTimeout(() => {
@@ -46,21 +36,9 @@ function App() {
       });
   }, []);
 
-  const handleChangeField = (catchmentUuid: string, stationSid: string) => {
-    setCatchmentStations([
-      ...catchmentStations.filter((cs) => cs.catchmentUuid !== catchmentUuid),
-      { catchmentUuid, stationSid },
-    ]);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("submit", catchmentStations);
-  };
-
   const handleClickFeature = (e: mapboxgl.MapLayerMouseEvent) => {
     const features = mapRef.current?.queryRenderedFeatures(e.point, {
-      layers: ["catchments", "stations"],
+      layers: ['catchments', 'stations'],
     });
     if (!features?.[0]?.properties) {
       setSelectedStation(null);
@@ -70,50 +48,21 @@ function App() {
 
     if (feature.properties?.station_sid) {
       setSelectedStation(feature);
-      console.log("Clicked on station", feature.properties.station_sid);
+      console.log('Clicked on station', feature.properties.station_sid);
       return;
     }
     if (feature.properties?.node_type) {
-      console.log("Clicked on catchment", feature.properties.uuid);
+      console.log('Clicked on catchment', feature.properties.uuid);
     }
   };
 
   return (
     <div className="App">
-      <div className="Form">
-        <form onSubmit={handleSubmit}>
-          <h2>Each catchment needs to be linked to a station</h2>
-          {selectedStation && (
-            <>
-              <strong>Selected Station</strong>{" "}
-              {selectedStation.properties.name}
-              <br />
-              sid:
-              {selectedStation.properties.station_sid}
-            </>
-          )}
-          <ul>
-            {catchments &&
-              catchments.features.map((catchment: any, i: number) => (
-                <li key={catchment.properties.uuid}>
-                  {catchment.properties.name}
-                  <input
-                    type="text"
-                    placeholder="Station Sid"
-                    onChange={(e) =>
-                      handleChangeField(
-                        catchment.properties.uuid,
-                        e.target.value
-                      )
-                    }
-                    required
-                  />
-                </li>
-              ))}
-          </ul>
-          <input type="submit" />
-        </form>
-      </div>
+      <Form
+        selectedStation={selectedStation}
+        setSelectedStation={setSelectedStation}
+        catchments={catchments}
+      />
       <div className="Map">
         <Map
           initialViewState={{
@@ -121,7 +70,7 @@ function App() {
             latitude: projectCenter[1],
             zoom: 7,
           }}
-          style={{ width: "100%", height: "100vh" }}
+          style={{ width: '100%', height: '100vh' }}
           mapStyle="mapbox://styles/mapbox/light-v11"
           mapboxAccessToken={REACT_APP_MAPBOX_TOKEN}
           ref={mapRef as any}
@@ -132,9 +81,9 @@ function App() {
               id="stations"
               type="circle"
               paint={{
-                "circle-color": "blue",
-                "circle-opacity": 0.3,
-                "circle-radius": 15,
+                'circle-color': 'blue',
+                'circle-opacity': 0.3,
+                'circle-radius': 15,
               }}
             />
           </Source>
@@ -144,17 +93,17 @@ function App() {
               beforeId="stations"
               type="fill"
               paint={{
-                "fill-opacity": 0.5,
+                'fill-opacity': 0.5,
               }}
             />
             <Layer
               id="catchments_labels"
               type="symbol"
               paint={{
-                "text-color": "black",
+                'text-color': 'black',
               }}
               layout={{
-                "text-field": ["get", "name"],
+                'text-field': ['get', 'name'],
               }}
             />
           </Source>
@@ -164,9 +113,9 @@ function App() {
                 id="selected-station"
                 type="circle"
                 paint={{
-                  "circle-color": "red",
-                  "circle-opacity": 0.4,
-                  "circle-radius": 15,
+                  'circle-color': 'red',
+                  'circle-opacity': 0.4,
+                  'circle-radius': 15,
                 }}
               />
             </Source>
