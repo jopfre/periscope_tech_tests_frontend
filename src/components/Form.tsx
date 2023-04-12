@@ -1,11 +1,8 @@
 import { useState } from 'react';
+import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
 
 interface FormProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
-  setSelectedStation: React.Dispatch<
-    React.SetStateAction<mapboxgl.MapboxGeoJSONFeature | null>
-  >;
-  catchments: any | null;
 }
 
 interface CatchmentStation {
@@ -15,11 +12,8 @@ interface CatchmentStation {
   validationDateRange?: string;
 }
 
-const Form: React.FC<FormProps> = ({
-  selectedStation,
-  setSelectedStation,
-  catchments,
-}) => {
+const Form: React.FC<FormProps> = ({ selectedStation }) => {
+  const { catchments, loading: catchmentsLoading } = useCatchmentBoundaries();
   const [catchmentStations, setCatchmentStations] = useState<
     CatchmentStation[]
   >([]);
@@ -47,22 +41,30 @@ const Form: React.FC<FormProps> = ({
             {selectedStation.properties?.station_sid}
           </>
         )}
-        <ul>
-          {catchments &&
-            catchments.features.map((catchment: any, i: number) => (
-              <li key={catchment.properties.uuid}>
-                {catchment.properties.name}
-                <input
-                  type="text"
-                  placeholder="Station Sid"
-                  onChange={(e) =>
-                    handleChangeField(catchment.properties.uuid, e.target.value)
-                  }
-                  required
-                />
-              </li>
-            ))}
-        </ul>
+        {catchmentsLoading ? (
+          'Loading'
+        ) : (
+          <ul>
+            {catchments &&
+              catchments.features.map((catchment: any, i: number) => (
+                <li key={catchment.properties.uuid}>
+                  {catchment.properties.name}
+                  <input
+                    type="text"
+                    placeholder="Station Sid"
+                    onChange={(e) =>
+                      handleChangeField(
+                        catchment.properties.uuid,
+                        e.target.value,
+                      )
+                    }
+                    required
+                  />
+                </li>
+              ))}
+          </ul>
+        )}
+
         <input type="submit" />
       </form>
     </div>
