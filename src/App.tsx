@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MapRef } from 'react-map-gl';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,12 +11,17 @@ import Map from './components/Map';
 import HurmeBold from './fonts/HurmeGeometricSans3-Bold.3eb395d8.woff2';
 import DMSans from './fonts/DMSans-Regular.451a3489.woff2';
 import DMSansBold from './fonts/DMSans-Bold.318e4ab1.woff2';
-// import HurmeSemiBoldWoff2 from './fonts/HurmeGeometricSans3 SemiBold.3eb395d8.woff2';
 
+// interface MapRef {
+//   buttonRef: Ref<HTMLButtonElement>
+// }
+
+import React, { useRef } from 'react';
 function App() {
   const [selectedStation, setSelectedStation] =
     useState<null | mapboxgl.MapboxGeoJSONFeature>(null);
 
+  const mapRef = useRef<MapRef>(null);
   const theme = createTheme({
     palette: {
       primary: {
@@ -82,6 +88,7 @@ function App() {
         </Grid>
         <Grid item xs={12} md={8}>
           <Map
+            ref={mapRef}
             selectedStation={selectedStation}
             setSelectedStation={setSelectedStation}
           />

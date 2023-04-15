@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
+
 import Skeleton from '@mui/material/Skeleton';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import toTitleCase from '../utils/toTitleCase';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
