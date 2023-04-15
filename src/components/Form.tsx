@@ -1,5 +1,12 @@
 import { useState } from 'react';
 import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
+import Skeleton from '@mui/material/Skeleton';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import toTitleCase from '../utils/toTitleCase';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 
 interface FormProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
@@ -30,44 +37,54 @@ const Form: React.FC<FormProps> = ({ selectedStation }) => {
     console.log('submit', catchmentStations);
   };
   return (
-    <div className="Form">
-      <form onSubmit={handleSubmit}>
-        <h2>Each catchment needs to be linked to a station</h2>
-        {selectedStation && (
-          <>
-            <strong>Selected Station</strong> {selectedStation.properties?.name}
-            <br />
-            sid:
-            {selectedStation.properties?.station_sid}
-          </>
-        )}
-        {catchmentsLoading ? (
-          'Loading'
-        ) : (
-          <ul>
+    <Container>
+      <Typography variant="h2" gutterBottom mt={6} mb={2}>
+        Link each catchment with a station
+      </Typography>
+      {selectedStation && (
+        <>
+          <strong>Selected Station</strong> {selectedStation.properties?.name}
+          <br />
+          sid:
+          {selectedStation.properties?.station_sid}
+        </>
+      )}
+
+      {catchmentsLoading ? (
+        <Stack spacing={2}>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+        </Stack>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
             {catchments &&
               catchments.features.map((catchment: any, i: number) => (
-                <li key={catchment.properties.uuid}>
-                  {catchment.properties.name}
-                  <input
-                    type="text"
-                    placeholder="Station Sid"
-                    onChange={(e) =>
-                      handleChangeField(
-                        catchment.properties.uuid,
-                        e.target.value,
-                      )
-                    }
-                    required
-                  />
-                </li>
+                <TextField
+                  key={catchment.properties.uuid}
+                  label={catchment.properties.name}
+                  placeholder="Station Sid"
+                  onChange={(e) =>
+                    handleChangeField(catchment.properties.uuid, e.target.value)
+                  }
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
               ))}
-          </ul>
-        )}
-
-        <input type="submit" />
-      </form>
-    </div>
+            <div>
+              <Button type="submit" variant="contained">
+                Submit
+              </Button>
+            </div>
+          </Stack>
+        </form>
+      )}
+    </Container>
   );
 };
 
