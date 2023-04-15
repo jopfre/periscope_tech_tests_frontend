@@ -71,6 +71,18 @@ const Form: React.FC<FormProps> = ({ selectedStation }) => {
                   onChange={(e) =>
                     handleChangeField(catchment.properties.uuid, e.target.value)
                   }
+                  onMouseEnter={() => {
+                    // map.setFeatureState(
+                    //   {
+                    //     source: 'catchements',
+                    //     id:catchment.properties.uuid
+                    //   },
+                    //   {
+                    //     hover: true
+                    //   }
+                    // );
+                  }}
+                  // onMouseLeave={() => setIsShown(false)}>
                   variant="outlined"
                   required
                   fullWidth

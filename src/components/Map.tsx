@@ -46,21 +46,21 @@ const Map: React.FC<MapProps> = ({ selectedStation, setSelectedStation }) => {
 
   return (
     <div className="Map">
-      <MapGL
-        initialViewState={{
-          longitude: projectCenter[0],
-          latitude: projectCenter[1],
-          zoom: 7,
-        }}
-        style={{ width: '100%', height: '100vh' }}
-        mapStyle="mapbox://styles/mapbox/light-v11"
-        mapboxAccessToken={REACT_APP_MAPBOX_TOKEN}
-        ref={mapRef as any}
-        onClick={handleClickFeature}
-      >
-        {stationsLoading ? (
-          'Loading'
-        ) : (
+      {stationsLoading || catchmentsLoading ? (
+        'Loading'
+      ) : (
+        <MapGL
+          initialViewState={{
+            longitude: projectCenter[0],
+            latitude: projectCenter[1],
+            zoom: 7,
+          }}
+          style={{ width: '100%', height: '100vh' }}
+          mapStyle="mapbox://styles/mapbox/light-v11"
+          mapboxAccessToken={REACT_APP_MAPBOX_TOKEN}
+          ref={mapRef as any}
+          onClick={handleClickFeature}
+        >
           <Source type="geojson" data={stations}>
             <Layer
               id="stations"
@@ -72,17 +72,24 @@ const Map: React.FC<MapProps> = ({ selectedStation, setSelectedStation }) => {
               }}
             />
           </Source>
-        )}
-        {catchmentsLoading ? (
-          'Loading'
-        ) : (
-          <Source type="geojson" data={catchments}>
+
+          <Source
+            type="geojson"
+            data={catchments}
+            promoteId={{ catchments: 'uuid' }}
+          >
             <Layer
               id="catchments"
               beforeId="stations"
               type="fill"
               paint={{
-                'fill-opacity': 0.5,
+                // 'fill-opacity': 0.5,
+                'fill-opacity': [
+                  'case',
+                  ['boolean', ['feature-state', 'hover'], false],
+                  1,
+                  0.5,
+                ],
               }}
             />
             <Layer
@@ -96,21 +103,22 @@ const Map: React.FC<MapProps> = ({ selectedStation, setSelectedStation }) => {
               }}
             />
           </Source>
-        )}
-        {!selectedStation ? null : (
-          <Source type="geojson" data={selectedStation}>
-            <Layer
-              id="selected-station"
-              type="circle"
-              paint={{
-                'circle-color': 'red',
-                'circle-opacity': 0.4,
-                'circle-radius': 15,
-              }}
-            />
-          </Source>
-        )}
-      </MapGL>
+
+          {!selectedStation ? null : (
+            <Source type="geojson" data={selectedStation}>
+              <Layer
+                id="selected-station"
+                type="circle"
+                paint={{
+                  'circle-color': 'red',
+                  'circle-opacity': 0.4,
+                  'circle-radius': 15,
+                }}
+              />
+            </Source>
+          )}
+        </MapGL>
+      )}
     </div>
   );
 };
