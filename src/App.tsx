@@ -21,7 +21,7 @@ function App() {
   const [selectedStation, setSelectedStation] =
     useState<null | mapboxgl.MapboxGeoJSONFeature>(null);
 
-  const mapRef = useRef<MapRef>(null);
+  const mapRef = useRef<any>(null);
   const theme = createTheme({
     palette: {
       primary: {
@@ -84,7 +84,7 @@ function App() {
         }}
       >
         <Grid item xs={12} md={4}>
-          <Form selectedStation={selectedStation} />
+          <Form selectedStation={selectedStation} mapRef={mapRef} />
         </Grid>
         <Grid item xs={12} md={8}>
           <Map

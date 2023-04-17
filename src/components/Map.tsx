@@ -15,10 +15,7 @@ interface MapProps {
 // export type Ref = HTMLDivElement | null;
 
 const Map = forwardRef(
-  (
-    { selectedStation, setSelectedStation }: MapProps,
-    ref: MutableRefObject<MapGL>,
-  ) => {
+  ({ selectedStation, setSelectedStation }: MapProps, ref: any) => {
     // const Map: React.FC<MapProps, HTMLElement> = forwardRef(({ selectedStation, setSelectedStation }, mapRef) => {
     // const Map = React.forwardRef< MapProps, MapRef>(({ selectedStation, setSelectedStation }, ref) => {
 
@@ -36,8 +33,9 @@ const Map = forwardRef(
     const handleClickFeature = (e: mapboxgl.MapLayerMouseEvent) => {
       console.log(ref?.current);
       const features = ref?.current?.queryRenderedFeatures(e.point, {
-        layers: ['catchments', 'stations'],
+        layers: ['catchment-fills', 'stations'],
       });
+      console.log(features);
       if (!features?.[0]?.properties) {
         setSelectedStation(null);
         return;
@@ -86,24 +84,24 @@ const Map = forwardRef(
             <Source
               type="geojson"
               data={catchments}
-              promoteId={{ catchments: 'uuid' }}
+              promoteId="uuid"
+              id="catchments"
             >
               <Layer
-                id="catchments"
+                id="catchment-fills"
                 beforeId="stations"
                 type="fill"
                 paint={{
-                  // 'fill-opacity': 0.5,
                   'fill-opacity': [
                     'case',
                     ['boolean', ['feature-state', 'hover'], false],
-                    1,
+                    0.7,
                     0.5,
                   ],
                 }}
               />
               <Layer
-                id="catchments_labels"
+                id="catchment-labels"
                 type="symbol"
                 paint={{
                   'text-color': 'black',

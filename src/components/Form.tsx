@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 
 interface FormProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
+  mapRef: any;
 }
 
 interface CatchmentStation {
@@ -19,7 +20,7 @@ interface CatchmentStation {
   validationDateRange?: string;
 }
 
-const Form: React.FC<FormProps> = ({ selectedStation }) => {
+const Form: React.FC<FormProps> = ({ selectedStation, mapRef }) => {
   const { catchments, loading: catchmentsLoading } = useCatchmentBoundaries();
   const [catchmentStations, setCatchmentStations] = useState<
     CatchmentStation[]
@@ -72,17 +73,28 @@ const Form: React.FC<FormProps> = ({ selectedStation }) => {
                     handleChangeField(catchment.properties.uuid, e.target.value)
                   }
                   onMouseEnter={() => {
-                    // map.setFeatureState(
-                    //   {
-                    //     source: 'catchements',
-                    //     id:catchment.properties.uuid
-                    //   },
-                    //   {
-                    //     hover: true
-                    //   }
-                    // );
+                    console.log(mapRef.current.getStyle().layers);
+                    mapRef.current.setFeatureState(
+                      {
+                        source: 'catchments',
+                        id: catchment.properties.uuid,
+                      },
+                      {
+                        hover: true,
+                      },
+                    );
                   }}
-                  // onMouseLeave={() => setIsShown(false)}>
+                  onMouseLeave={() => {
+                    mapRef.current.setFeatureState(
+                      {
+                        source: 'catchments',
+                        id: catchment.properties.uuid,
+                      },
+                      {
+                        hover: false,
+                      },
+                    );
+                  }}
                   variant="outlined"
                   required
                   fullWidth
