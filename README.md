@@ -69,7 +69,7 @@ Possible improvements to the current UI would be:
   }
   ```
 - Allow selection of catchment and station from the map without having to use a form
-- When hovering over a catchment in the form, highlight the catchment on the map
+- ✓ When hovering over a catchment in the form, highlight the catchment on the map
 - ✓ Refactor the code by componentizing the form, map and create hooks for data-fetching.
 
 These are mere suggestions and you're very welcome to showcase what you can do any way you like using the data provided.
