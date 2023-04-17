@@ -1,10 +1,11 @@
 import MapGL, { Layer, Source, MapRef } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { MutableRefObject, useRef } from 'react';
 
+import { useForwardRef } from '../hooks/useForwardRef';
 import { useClimateStations } from '../hooks/useClimateStations';
 import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
 import { forwardRef } from 'react';
+
 interface MapProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
   setSelectedStation: React.Dispatch<
@@ -12,27 +13,21 @@ interface MapProps {
   >;
 }
 
-// export type Ref = HTMLDivElement | null;
-
-const Map = forwardRef(
-  ({ selectedStation, setSelectedStation }: MapProps, ref: any) => {
-    // const Map: React.FC<MapProps, HTMLElement> = forwardRef(({ selectedStation, setSelectedStation }, mapRef) => {
-    // const Map = React.forwardRef< MapProps, MapRef>(({ selectedStation, setSelectedStation }, ref) => {
-
+const Map = forwardRef<MapRef, MapProps>(
+  ({ selectedStation, setSelectedStation }, ref) => {
     const projectCenter = [-103.47180301341449, 51.81286542594248] as const;
 
     const REACT_APP_MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
     if (!REACT_APP_MAPBOX_TOKEN)
       throw new Error('REACT_APP_MAPBOX_TOKEN is not defined');
 
-    // const mapRef = useRef<MapRef>();
+    const forwardedRef = useForwardRef<MapRef>(ref);
 
     const { stations, loading: stationsLoading } = useClimateStations();
     const { catchments, loading: catchmentsLoading } = useCatchmentBoundaries();
 
     const handleClickFeature = (e: mapboxgl.MapLayerMouseEvent) => {
-      console.log(ref?.current);
-      const features = ref?.current?.queryRenderedFeatures(e.point, {
+      const features = forwardedRef?.current?.queryRenderedFeatures(e.point, {
         layers: ['catchment-fills', 'stations'],
       });
       console.log(features);

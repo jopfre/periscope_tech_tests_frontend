@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, RefObject } from 'react';
 import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
 
 import Skeleton from '@mui/material/Skeleton';
@@ -7,10 +7,11 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import { MapRef } from 'react-map-gl';
 
 interface FormProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
-  mapRef: any;
+  mapRef: RefObject<MapRef>;
 }
 
 interface CatchmentStation {
@@ -73,8 +74,7 @@ const Form: React.FC<FormProps> = ({ selectedStation, mapRef }) => {
                     handleChangeField(catchment.properties.uuid, e.target.value)
                   }
                   onMouseEnter={() => {
-                    console.log(mapRef.current.getStyle().layers);
-                    mapRef.current.setFeatureState(
+                    mapRef.current?.setFeatureState(
                       {
                         source: 'catchments',
                         id: catchment.properties.uuid,
@@ -85,7 +85,7 @@ const Form: React.FC<FormProps> = ({ selectedStation, mapRef }) => {
                     );
                   }}
                   onMouseLeave={() => {
-                    mapRef.current.setFeatureState(
+                    mapRef.current?.setFeatureState(
                       {
                         source: 'catchments',
                         id: catchment.properties.uuid,
