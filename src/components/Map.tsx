@@ -1,7 +1,6 @@
 import MapGL, { Layer, Source, MapRef } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-import { useForwardRef } from '../hooks/useForwardRef';
 import { useClimateStations } from '../hooks/useClimateStations';
 import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
 import { forwardRef } from 'react';
@@ -21,29 +20,27 @@ const Map = forwardRef<MapRef, MapProps>(
     if (!REACT_APP_MAPBOX_TOKEN)
       throw new Error('REACT_APP_MAPBOX_TOKEN is not defined');
 
-    const forwardedRef = useForwardRef<MapRef>(ref);
-
     const { stations, loading: stationsLoading } = useClimateStations();
     const { catchments, loading: catchmentsLoading } = useCatchmentBoundaries();
 
     const handleClickFeature = (e: mapboxgl.MapLayerMouseEvent) => {
-      const features = forwardedRef?.current?.queryRenderedFeatures(e.point, {
-        layers: ['catchment-fills', 'stations'],
-      });
-      console.log(features);
-      if (!features?.[0]?.properties) {
-        setSelectedStation(null);
-        return;
-      }
-      const feature = features[0];
-
-      if (feature.properties?.station_sid) {
-        setSelectedStation(feature);
-        console.log('Clicked on station', feature.properties.station_sid);
-        return;
-      }
-      if (feature.properties?.node_type) {
-        console.log('Clicked on catchment', feature.properties.uuid);
+      if (ref != null && typeof ref !== 'function') {
+        const features = ref?.current?.queryRenderedFeatures(e.point, {
+          layers: ['catchment-fills', 'stations'],
+        });
+        if (!features?.[0]?.properties) {
+          setSelectedStation(null);
+          return;
+        }
+        const feature = features[0];
+        if (feature.properties?.station_sid) {
+          setSelectedStation(feature);
+          console.log('Clicked on station', feature.properties.station_sid);
+          return;
+        }
+        if (feature.properties?.node_type) {
+          console.log('Clicked on catchment', feature.properties.uuid);
+        }
       }
     };
 

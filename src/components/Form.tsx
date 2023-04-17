@@ -38,6 +38,7 @@ const Form: React.FC<FormProps> = ({ selectedStation, mapRef }) => {
     e.preventDefault();
     console.log('submit', catchmentStations);
   };
+
   return (
     <Container>
       <Typography variant="h2" gutterBottom mt={6} mb={2}>
