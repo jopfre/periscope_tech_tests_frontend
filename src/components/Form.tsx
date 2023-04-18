@@ -44,17 +44,18 @@ const Form: React.FC<FormProps> = ({ selectedStation, mapRef }) => {
       <Typography variant="h2" gutterBottom mt={6} mb={2}>
         Assign stations
       </Typography>
-      {selectedStation && (
+      {/*selectedStation && (
         <>
           <strong>Selected Station</strong> {selectedStation.properties?.name}
           <br />
           sid:
           {selectedStation.properties?.station_sid}
         </>
-      )}
+      )*/}
 
       {catchmentsLoading ? (
         <Stack spacing={2}>
+          <Skeleton />
           <Skeleton />
           <Skeleton />
           <Skeleton />

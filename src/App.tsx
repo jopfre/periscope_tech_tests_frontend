@@ -33,9 +33,13 @@ function App() {
         fontFamily: 'HurmeBold, sans-serif',
         fontSize: '1.5rem',
       },
+      h3: {
+        fontFamily: 'DMSansBold, sans-serif',
+        fontSize: '1.2rem',
+      },
       button: {
+        fontFamily: 'DMSansBold, sans-serif',
         fontSize: '1rem',
-        fontFamily: 'DMSansBold',
       },
     },
     components: {

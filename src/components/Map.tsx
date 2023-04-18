@@ -117,7 +117,7 @@ const Map = forwardRef<MapRef, MapProps>(
                 )}
                 onClose={() => setSelectedStation(null)}
               >
-                <Typography gutterBottom>
+                <Typography variant="h3" gutterBottom>
                   {selectedStation.properties?.name}
                 </Typography>
                 <Typography gutterBottom>
@@ -126,7 +126,7 @@ const Map = forwardRef<MapRef, MapProps>(
                 <Typography gutterBottom>
                   ID: {selectedStation.properties?.station_id}
                 </Typography>
-                <Typography gutterBottom sx={{ overflowWrap: 'break-word' }}>
+                <Typography sx={{ overflowWrap: 'break-word' }}>
                   SID: {selectedStation.properties?.station_sid}
                 </Typography>
               </Popup>
