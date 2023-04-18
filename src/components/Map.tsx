@@ -1,9 +1,12 @@
-import MapGL, { Layer, Source, MapRef } from 'react-map-gl';
+import MapGL, { Layer, Source, MapRef, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import { useClimateStations } from '../hooks/useClimateStations';
 import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
-import { forwardRef } from 'react';
+import { forwardRef, useState, useMemo } from 'react';
+import Typography from '@mui/material/Typography';
+
+import Pin from './Pin';
 
 interface MapProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
@@ -26,23 +29,59 @@ const Map = forwardRef<MapRef, MapProps>(
     const handleClickFeature = (e: mapboxgl.MapLayerMouseEvent) => {
       if (ref != null && typeof ref !== 'function') {
         const features = ref?.current?.queryRenderedFeatures(e.point, {
-          layers: ['catchment-fills', 'stations'],
+          // layers: ['catchment-fills', 'stations'],
+          layers: ['catchment-fills'],
         });
         if (!features?.[0]?.properties) {
           setSelectedStation(null);
           return;
         }
         const feature = features[0];
-        if (feature.properties?.station_sid) {
-          setSelectedStation(feature);
-          console.log('Clicked on station', feature.properties.station_sid);
-          return;
-        }
+        // if (feature.properties?.station_sid) {
+        //   setSelectedStation(feature);
+        //   console.log('Clicked on station', feature.properties.station_sid);
+        //   return;
+        // }
         if (feature.properties?.node_type) {
           console.log('Clicked on catchment', feature.properties.uuid);
         }
       }
     };
+
+    const pins = useMemo(() => {
+      if (stations?.features?.length > 0) {
+        return stations.features.map(
+          (feature: mapboxgl.MapboxGeoJSONFeature) => {
+            return (
+              <Marker
+                key={feature.properties?.station_sid}
+                longitude={
+                  feature.geometry.type === 'Point'
+                    ? feature.geometry.coordinates[0]
+                    : undefined
+                }
+                latitude={
+                  feature.geometry.type === 'Point'
+                    ? feature.geometry.coordinates[1]
+                    : undefined
+                }
+                anchor="bottom"
+                onClick={(e) => {
+                  e.originalEvent.stopPropagation();
+                  setSelectedStation(feature);
+                  console.log(
+                    'Clicked on station',
+                    feature.properties?.station_sid,
+                  );
+                }}
+              >
+                <Pin />
+              </Marker>
+            );
+          },
+        );
+      }
+    }, [stations]);
 
     return (
       <div className="Map">
@@ -61,7 +100,38 @@ const Map = forwardRef<MapRef, MapProps>(
             ref={ref}
             onClick={handleClickFeature}
           >
-            <Source type="geojson" data={stations}>
+            {pins}
+            {console.log(selectedStation)}
+            {selectedStation && (
+              <Popup
+                anchor="top"
+                longitude={Number(
+                  selectedStation.geometry.type === 'Point'
+                    ? selectedStation.geometry.coordinates[0]
+                    : undefined,
+                )}
+                latitude={Number(
+                  selectedStation.geometry.type === 'Point'
+                    ? selectedStation.geometry.coordinates[1]
+                    : undefined,
+                )}
+                onClose={() => setSelectedStation(null)}
+              >
+                <Typography gutterBottom>
+                  {selectedStation.properties?.name}
+                </Typography>
+                <Typography gutterBottom>
+                  Elevation: {selectedStation.properties?.elevation}m
+                </Typography>
+                <Typography gutterBottom>
+                  ID: {selectedStation.properties?.station_id}
+                </Typography>
+                <Typography gutterBottom sx={{ overflowWrap: 'break-word' }}>
+                  SID: {selectedStation.properties?.station_sid}
+                </Typography>
+              </Popup>
+            )}
+            {/* <Source type="geojson" data={stations}>
               <Layer
                 id="stations"
                 type="circle"
@@ -71,7 +141,7 @@ const Map = forwardRef<MapRef, MapProps>(
                   'circle-radius': 15,
                 }}
               />
-            </Source>
+            </Source> */}
 
             <Source
               type="geojson"
@@ -81,7 +151,7 @@ const Map = forwardRef<MapRef, MapProps>(
             >
               <Layer
                 id="catchment-fills"
-                beforeId="stations"
+                // beforeId="stations"
                 type="fill"
                 paint={{
                   'fill-opacity': [
