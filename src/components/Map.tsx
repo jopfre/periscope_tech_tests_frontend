@@ -1,12 +1,12 @@
-import MapGL, { Layer, Source, MapRef, Marker, Popup } from 'react-map-gl';
+import MapGL, { Layer, Source, MapRef } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import { useClimateStations } from '../hooks/useClimateStations';
 import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
-import { forwardRef, useState, useMemo } from 'react';
-import Typography from '@mui/material/Typography';
+import { forwardRef, useMemo } from 'react';
 
-import Pin from './Pin';
+import Popup from './Popup';
+import Marker from './Marker';
 
 interface MapProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
@@ -54,29 +54,10 @@ const Map = forwardRef<MapRef, MapProps>(
           (feature: mapboxgl.MapboxGeoJSONFeature) => {
             return (
               <Marker
-                key={feature.properties?.station_sid}
-                longitude={
-                  feature.geometry.type === 'Point'
-                    ? feature.geometry.coordinates[0]
-                    : undefined
-                }
-                latitude={
-                  feature.geometry.type === 'Point'
-                    ? feature.geometry.coordinates[1]
-                    : undefined
-                }
-                anchor="bottom"
-                onClick={(e) => {
-                  e.originalEvent.stopPropagation();
-                  setSelectedStation(feature);
-                  console.log(
-                    'Clicked on station',
-                    feature.properties?.station_sid,
-                  );
-                }}
-              >
-                <Pin />
-              </Marker>
+                feature={feature}
+                setSelectedStation={setSelectedStation}
+                key={feature?.properties?.station_sid}
+              />
             );
           },
         );
@@ -104,32 +85,9 @@ const Map = forwardRef<MapRef, MapProps>(
             {console.log(selectedStation)}
             {selectedStation && (
               <Popup
-                anchor="top"
-                longitude={Number(
-                  selectedStation.geometry.type === 'Point'
-                    ? selectedStation.geometry.coordinates[0]
-                    : undefined,
-                )}
-                latitude={Number(
-                  selectedStation.geometry.type === 'Point'
-                    ? selectedStation.geometry.coordinates[1]
-                    : undefined,
-                )}
-                onClose={() => setSelectedStation(null)}
-              >
-                <Typography variant="h3" gutterBottom>
-                  {selectedStation.properties?.name}
-                </Typography>
-                <Typography gutterBottom>
-                  Elevation: {selectedStation.properties?.elevation}m
-                </Typography>
-                <Typography gutterBottom>
-                  ID: {selectedStation.properties?.station_id}
-                </Typography>
-                <Typography sx={{ overflowWrap: 'break-word' }}>
-                  SID: {selectedStation.properties?.station_sid}
-                </Typography>
-              </Popup>
+                selectedStation={selectedStation}
+                setSelectedStation={setSelectedStation}
+              />
             )}
             {/* <Source type="geojson" data={stations}>
               <Layer
