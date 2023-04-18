@@ -54,7 +54,7 @@ Possible improvements to the current UI would be:
 
   Dates should be between 1/1/1980 and the current date, and no overlap between training and validation ranges.
 
-- Display the data availability for each station using a popup ([example](https://visgl.github.io/react-map-gl/examples/controls)) (if available in the dataset)
+- ✓ Display the data availability for each station using a popup ([example](https://visgl.github.io/react-map-gl/examples/controls)) (if available in the dataset)
 - Visualise the data availability for a station (or lack of) on the map
 - Implement a select field that lists the stations (_sorted by [distance](https://turfjs.org/docs/#distance) from the catchment center_) for selection of a station_sid for each catchment (instead of having the user copy/paste the station_sid)
   ```ts

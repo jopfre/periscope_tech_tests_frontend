@@ -42,7 +42,7 @@ const Form: React.FC<FormProps> = ({ selectedStation, mapRef }) => {
   return (
     <Container>
       <Typography variant="h2" gutterBottom mt={6} mb={2}>
-        Link each catchment with a station
+        Assign stations
       </Typography>
       {selectedStation && (
         <>
