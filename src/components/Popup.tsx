@@ -30,9 +30,6 @@ export default ({
     catchmentUuid: string | undefined,
   ) => {
     setChecked(event.target.checked);
-
-    // console.log(selectedStation?.properties?.station_sid, catchmentUuid);
-    // setCatchmentStations()
     if (catchmentUuid) {
       if (event.target.checked) {
         setCatchmentStations([
@@ -89,7 +86,6 @@ export default ({
             {catchment && catchment[0]?.id ? (
               <>
                 {catchment[0].properties?.name} Assigned{' '}
-                {console.log(selectedStation)}
                 <Checkbox
                   checked={catchmentStations.some(
                     (el) =>
