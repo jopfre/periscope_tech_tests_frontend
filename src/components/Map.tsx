@@ -8,15 +8,29 @@ import { forwardRef, useMemo } from 'react';
 import Popup from './Popup';
 import Marker from './Marker';
 
+import { CatchmentStation } from '../App';
+
 interface MapProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
   setSelectedStation: React.Dispatch<
     React.SetStateAction<mapboxgl.MapboxGeoJSONFeature | null>
   >;
+  catchmentStations: CatchmentStation[];
+  setCatchmentStations: React.Dispatch<
+    React.SetStateAction<CatchmentStation[]>
+  >;
 }
 
 const Map = forwardRef<MapRef, MapProps>(
-  ({ selectedStation, setSelectedStation }, ref) => {
+  (
+    {
+      selectedStation,
+      setSelectedStation,
+      catchmentStations,
+      setCatchmentStations,
+    },
+    ref,
+  ) => {
     const projectCenter = [-103.47180301341449, 51.81286542594248] as const;
 
     const REACT_APP_MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -82,11 +96,13 @@ const Map = forwardRef<MapRef, MapProps>(
             onClick={handleClickFeature}
           >
             {pins}
-            {console.log(selectedStation)}
             {selectedStation && (
               <Popup
+                mapRef={ref}
                 selectedStation={selectedStation}
                 setSelectedStation={setSelectedStation}
+                catchmentStations={catchmentStations}
+                setCatchmentStations={setCatchmentStations}
               />
             )}
             {/* <Source type="geojson" data={stations}>

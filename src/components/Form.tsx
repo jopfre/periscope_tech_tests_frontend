@@ -8,24 +8,24 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { MapRef } from 'react-map-gl';
+import { CatchmentStation } from '../App';
 
 interface FormProps {
   selectedStation: mapboxgl.MapboxGeoJSONFeature | null;
   mapRef: RefObject<MapRef>;
+  catchmentStations: CatchmentStation[];
+  setCatchmentStations: React.Dispatch<
+    React.SetStateAction<CatchmentStation[]>
+  >;
 }
 
-interface CatchmentStation {
-  catchmentUuid: string;
-  stationSid: string;
-  trainingDateRange?: string;
-  validationDateRange?: string;
-}
-
-const Form: React.FC<FormProps> = ({ selectedStation, mapRef }) => {
+const Form: React.FC<FormProps> = ({
+  selectedStation,
+  catchmentStations,
+  setCatchmentStations,
+  mapRef,
+}) => {
   const { catchments, loading: catchmentsLoading } = useCatchmentBoundaries();
-  const [catchmentStations, setCatchmentStations] = useState<
-    CatchmentStation[]
-  >([]);
 
   const handleChangeField = (catchmentUuid: string, stationSid: string) => {
     setCatchmentStations([
@@ -72,6 +72,11 @@ const Form: React.FC<FormProps> = ({ selectedStation, mapRef }) => {
                   key={catchment.properties.uuid}
                   label={catchment.properties.name}
                   placeholder="Station Sid"
+                  value={
+                    catchmentStations.find(
+                      (el) => el.catchmentUuid === catchment.properties.uuid,
+                    )?.stationSid || ''
+                  }
                   onChange={(e) =>
                     handleChangeField(catchment.properties.uuid, e.target.value)
                   }
