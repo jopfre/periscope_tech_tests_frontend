@@ -1,4 +1,4 @@
-import { useState, RefObject } from 'react';
+import { RefObject } from 'react';
 import { useCatchmentBoundaries } from '../hooks/useCatchmentBoundaries';
 
 import Skeleton from '@mui/material/Skeleton';

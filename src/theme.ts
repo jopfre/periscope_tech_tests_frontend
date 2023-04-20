@@ -13,6 +13,9 @@ const theme = {
     body1: {
       fontSize: '1.3rem',
     },
+    body2: {
+      fontSize: '1rem',
+    },
     h2: {
       fontFamily: 'HurmeBold, sans-serif',
       fontSize: '1.5rem',

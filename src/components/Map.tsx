@@ -76,7 +76,7 @@ const Map = forwardRef<MapRef, MapProps>(
           },
         );
       }
-    }, [stations]);
+    }, [stations, setSelectedStation]);
 
     return (
       <div className="Map">
@@ -148,7 +148,7 @@ const Map = forwardRef<MapRef, MapProps>(
               />
             </Source>
 
-            {!selectedStation ? null : (
+            {/* {!selectedStation ? null : (
               <Source type="geojson" data={selectedStation}>
                 <Layer
                   id="selected-station"
@@ -160,7 +160,7 @@ const Map = forwardRef<MapRef, MapProps>(
                   }}
                 />
               </Source>
-            )}
+            )} */}
           </MapGL>
         )}
       </div>

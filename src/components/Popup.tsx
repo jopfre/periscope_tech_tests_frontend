@@ -1,6 +1,6 @@
 import { Popup, MapRef } from 'react-map-gl';
 import Typography from '@mui/material/Typography';
-import { ForwardedRef, useState } from 'react';
+import { useEffect, ForwardedRef, useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { CatchmentStation } from '../App';
 
@@ -16,7 +16,7 @@ interface PopupProps {
   >;
 }
 
-export default ({
+const PeriscopePopup = ({
   selectedStation,
   setSelectedStation,
   catchmentStations,
@@ -24,7 +24,14 @@ export default ({
   mapRef,
 }: PopupProps) => {
   const [checked, setChecked] = useState(false);
-
+  useEffect(() => {
+    if (selectedStation)
+      setChecked(
+        catchmentStations.some(
+          (el) => el.stationSid === selectedStation.properties?.station_sid,
+        ),
+      );
+  }, [catchmentStations, selectedStation]);
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     catchmentUuid: string | undefined,
@@ -81,16 +88,14 @@ export default ({
           {selectedStation?.properties?.name}
         </Typography>
         {
-          <Typography gutterBottom>
+          <Typography variant="body2" gutterBottom>
             Catchment:{' '}
             {catchment && catchment[0]?.id ? (
               <>
-                {catchment[0].properties?.name} Assigned{' '}
+                {catchment[0].properties?.name}
+                <br /> Assigned{' '}
                 <Checkbox
-                  checked={catchmentStations.some(
-                    (el) =>
-                      el.stationSid === selectedStation.properties?.station_sid,
-                  )}
+                  checked={checked}
                   onChange={(event) =>
                     handleChange(event, catchment[0].id?.toString())
                   }
@@ -101,13 +106,13 @@ export default ({
             )}
           </Typography>
         }
-        <Typography gutterBottom>
+        <Typography variant="body2" gutterBottom>
           Elevation: {selectedStation?.properties?.elevation}m
         </Typography>
-        <Typography gutterBottom>
+        <Typography variant="body2" gutterBottom>
           ID: {selectedStation?.properties?.station_id}
         </Typography>
-        <Typography sx={{ overflowWrap: 'break-word' }}>
+        <Typography variant="body2" sx={{ overflowWrap: 'break-word' }}>
           SID: {selectedStation?.properties?.station_sid}
         </Typography>
       </Popup>
@@ -115,3 +120,5 @@ export default ({
   }
   return <></>;
 };
+
+export default PeriscopePopup;

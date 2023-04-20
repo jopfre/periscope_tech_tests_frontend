@@ -49,7 +49,7 @@ Feel free to either continue on this project, or use the data provided in this p
 
 Possible improvements to the current UI would be:
 
-- Improve the look and feel of the UI (feel free to use your UI library of choice)
+- ✓ Improve the look and feel of the UI (feel free to use your UI library of choice)
 - Implement date range fields for each of catchment-station selection
 
   Dates should be between 1/1/1980 and the current date, and no overlap between training and validation ranges.
@@ -68,7 +68,7 @@ Possible improvements to the current UI would be:
     return distance(from, to, { units: 'kilometers' });
   }
   ```
-- Allow selection of catchment and station from the map without having to use a form
+- ✓ Allow selection of catchment and station from the map without having to use a form
 - ✓ When hovering over a catchment in the form, highlight the catchment on the map
 - ✓ Refactor the code by componentizing the form, map and create hooks for data-fetching.
 
